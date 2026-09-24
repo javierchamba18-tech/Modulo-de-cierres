@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://unpkg.com/antd@5.24.6/dist/reset.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&display=swap">
+<link rel="stylesheet" href="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/tokens/colors.css">
+<link rel="stylesheet" href="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/tokens/typography.css">
+<link rel="stylesheet" href="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/tokens/radius.css">
+<link rel="stylesheet" href="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/tokens/shadows.css">
+<link rel="stylesheet" href="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/tokens/motion.css">
+<link rel="stylesheet" href="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/tokens/controls.css">
+<link rel="stylesheet" href="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/tokens/base.css">
+<link rel="stylesheet" href="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/styles.css">
+<script src="https://unpkg.com/dayjs@1.11.13/dayjs.min.js"></script>
+<script src="https://unpkg.com/antd@5.24.6/dist/antd.min.js"></script>
+<script src="_ds/atomo-design-system-30859f81-9254-4e88-9ee4-efb6985b462c/_ds_bundle.js"></script>
+<style>
+html,body{height:100%;margin:0}
+.cierre-row{cursor:pointer;transition:box-shadow .08s cubic-bezier(.215,.61,.355,1),border-color .08s cubic-bezier(.215,.61,.355,1)}
+.cierre-row{background:var(--surface-card)}
+.cierre-row:hover{background:var(--surface-hover);border-color:var(--color-primary-border);box-shadow:0 1px 2px 0 rgba(0,0,0,0.06),0 2px 8px 0 rgba(0,0,0,0.10)}
+.cierre-row:hover .cierre-chevron{color:var(--color-primary)}
+.periodo-btn{cursor:pointer;transition:background .08s cubic-bezier(.215,.61,.355,1)}
+.periodo-btn:hover{background:var(--surface-hover)}
+.om-nav-wrap .atomo-nav-scroll{padding-top:64px!important}
+.om-nav-handle{cursor:ew-resize;display:flex;justify-content:flex-end}
+.om-nav-handle::after{content:"";width:2px;background:transparent;transition:background .08s cubic-bezier(.215,.61,.355,1)}
+.om-nav-handle:hover::after{background:var(--color-primary-border)}
+</style>
+</helmet>
+
+<div style="display:flex;height:100vh;overflow:hidden;background:var(--surface-page);font:var(--type-body);color:var(--text-body)">
+
+  <div class="om-nav-wrap" style="position:relative;display:flex;flex:0 0 auto">
+    <x-import component-from-global-scope="AtomoDesignSystem_30859f.Sidebar" hint-size="224px,100%" brand="Cierres" variant="light" collapsible="{{ true }}" width="{{ navWidth }}" on-collapse="{{ setNavCollapsed }}" items="{{ navItems }}" selected-key="{{ areaKey }}" on-select="{{ selectArea }}" footer="{{ sidebarFooter }}"></x-import>
+    <div class="om-nav-handle" role="separator" aria-label="Ajustar ancho del menú" onMouseDown="{{ startResize }}" style="position:absolute;top:0;bottom:0;right:0;width:5px;z-index:3"></div>
+    <sc-if value="{{ navExpanded }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;top:57px;left:0;right:0;padding:12px 16px;z-index:2">
+        <x-import component-from-global-scope="AtomoDesignSystem_30859f.Select" hint-size="100%,32px" value="{{ companyKey }}" on-change="{{ setCompany }}" options="{{ companyOptions }}" show-search="{{ true }}" popup-match-select-width="{{ popupWidth }}" style="width:100%;font-size:13px"></x-import>
+      </div>
+    </sc-if>
+    <sc-if value="{{ navIsCollapsed }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;top:57px;left:0;right:0;display:flex;justify-content:center;padding:12px 0;z-index:2">
+        <x-import component-from-global-scope="AtomoDesignSystem_30859f.Button" hint-size="32px,32px" variant="outline" tone="neutral" icon="building-2" icon-only="{{ true }}" aria-label="Compañía"></x-import>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="display:flex;flex-direction:column;flex:1 1 auto;min-width:0">
+
+    <header style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex:0 0 auto;height:56px;padding:0 24px;background:var(--surface-card);border-bottom:1px solid var(--border-split)">
+      <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1 1 auto;font:var(--type-body);color:var(--text-tertiary)">
+        <span style="min-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ companyKey }}</span>
+        <span style="color:var(--text-quaternary)">/</span>
+        <span style="font-weight:500;color:var(--text-heading)">{{ areaName }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;flex:0 1 auto;min-width:0">
+        <span style="font:var(--type-caption);color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Última sincronización 03/12/2025 07:40</span>
+        <div style="display:flex;align-items:center;gap:8px;flex:0 0 auto;padding-left:16px;border-left:1px solid var(--border-split)">
+          <x-import component-from-global-scope="AtomoDesignSystem_30859f.Icon" hint-size="16px,16px" name="user" size="{{ 16 }}" color="var(--text-tertiary)"></x-import>
+          <span style="font:var(--type-label);color:var(--text-secondary);white-space:nowrap">Javier Mondragón Solano</span>
+        </div>
+      </div>
+    </header>
+
+    <div style="flex:1 1 auto;overflow:auto;padding:24px">
+      <div style="min-width:600px">
+
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px">
+          <div style="min-width:0">
+            <h1 style="margin:0 0 2px;font:var(--type-page-title);letter-spacing:-.2px;color:var(--text-heading)">{{ areaName }}</h1>
+            <p style="margin:0;font:var(--type-caption);color:var(--text-tertiary)">{{ headerMeta }}</p>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0">
+            <div style="min-width:0;max-width:100%;overflow-x:auto">
+              <x-import component-from-global-scope="AtomoDesignSystem_30859f.Tabs" hint-size="auto,28px" variant="segmented" size="compact" items="{{ filterItems }}" active-key="{{ filterKey }}" on-change="{{ setFilter }}"></x-import>
+            </div>
+            <sc-if value="{{ showResetPeriod }}" hint-placeholder-val="{{ false }}">
+              <x-import component-from-global-scope="AtomoDesignSystem_30859f.Button" hint-size="auto,28px" variant="text" tone="primary" size="compact" on-click="{{ resetPeriod }}">Ir al periodo actual</x-import>
+            </sc-if>
+          </div>
+          <div style="display:flex;align-items:center;flex:0 0 auto">
+            <x-import component-from-global-scope="AtomoDesignSystem_30859f.SearchInput" hint-size="240px,28px" size="compact" width="{{ 240 }}" placeholder="Buscar cierre" value="{{ query }}" on-change="{{ setQuery }}"></x-import>
+          </div>
+        </div>
+
+        <div>
+          <sc-if value="{{ hasRows }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+                <div class="cierre-row" role="button" tabindex="0" data-screen-label="{{ r.name }}" onClick="{{ r.open }}" onKeyDown="{{ r.key1 }}" style="display:flex;align-items:stretch;border:1px solid var(--border-split);border-radius:2px;box-shadow:0 1px 2px 0 rgba(0,0,0,0.06),0 1px 3px 0 rgba(0,0,0,0.10);overflow:hidden;min-height:90px">
+                  <div style="flex:0 0 auto;width:3px;background:{{ r.railColor }}"></div>
+                  <div style="display:flex;justify-content:center;align-items:center;flex:0 0 auto;width:44px;background:{{ r.iconBg }}">
+                    <x-import component-from-global-scope="AtomoDesignSystem_30859f.Icon" hint-size="16px,16px" name="{{ r.icon }}" size="{{ 16 }}" color="{{ r.iconColor }}" style="{{ r.iconStyle }}"></x-import>
+                  </div>
+                  <div style="display:flex;flex-direction:column;flex:1 1 auto;min-width:0">
+                  <div style="flex:1 1 auto;align-content:center;display:flex;flex-wrap:wrap;align-items:flex-start;gap:16px 24px;padding:14px 16px">
+                    <div style="display:flex;align-items:center;align-self:center;gap:10px;min-width:220px;flex:1 1 260px">
+                      <div style="min-width:0">
+                        <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:8px">
+                          <span style="font:var(--type-body);font-weight:500;color:{{ r.nameColor }}">{{ r.name }}</span>
+                        </div>
+                        <div style="margin-top:2px;font:var(--type-caption);color:var(--text-tertiary)">{{ r.meta }}</div>
+                        <sc-if value="{{ r.hasDesc }}" hint-placeholder-val="{{ false }}">
+                          <div style="margin-top:4px;max-width:520px;font:var(--type-caption);color:var(--text-secondary)">{{ r.desc }}</div>
+                        </sc-if>
+                      </div>
+                    </div>
+
+                    <div style="display:flex;align-items:flex-start;gap:24px;flex:0 1 auto;min-width:0;margin-left:auto">
+                      <sc-if value="{{ r.hasMonths }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;flex-direction:column;gap:8px;flex:0 1 auto;min-width:0;max-width:100%">
+                          <div style="display:flex;align-items:center;gap:6px">
+                            <x-import component-from-global-scope="AtomoDesignSystem_30859f.Icon" hint-size="14px,14px" name="info" size="{{ 14 }}" color="var(--text-tertiary)"></x-import>
+                            <span style="font:var(--type-caption);color:var(--text-tertiary)">Resumen de periodo</span>
+                          </div>
+                          <div style="display:flex;flex-wrap:wrap;gap:6px;min-width:0;max-width:100%">
+                            <sc-for list="{{ r.monthChips }}" as="mc" hint-placeholder-count="12">
+                              <span style="display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:22px;padding:0 8px;border:1px solid {{ mc.border }};border-radius:4px;background:{{ mc.bg }};font:var(--type-caption);font-weight:600;color:{{ mc.color }}">{{ mc.label }}</span>
+                            </sc-for>
+                          </div>
+                          <span style="font:var(--type-caption);color:var(--text-tertiary)">{{ r.stamp }}</span>
+                        </div>
+                      </sc-if>
+                      <div style="display:flex;flex-direction:column;gap:2px;flex:0 0 auto">
+                        <sc-if value="{{ r.hasM1 }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+                            <span style="font:var(--type-caption);color:var(--text-tertiary);white-space:nowrap">{{ r.m1l }}</span>
+                            <span style="font:var(--type-body);font-weight:500;font-variant-numeric:tabular-nums;color:{{ r.m1c }}">{{ r.m1v }}</span>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ r.hasM2 }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+                            <span style="font:var(--type-caption);color:var(--text-tertiary);white-space:nowrap">{{ r.m2l }}</span>
+                            <span style="font:var(--type-body);font-variant-numeric:tabular-nums;color:var(--text-body)">{{ r.m2v }}</span>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ r.noSummary }}" hint-placeholder-val="{{ false }}">
+                          <span style="font:var(--type-caption);color:var(--text-quaternary)">Sin información de respaldo</span>
+                        </sc-if>
+                      </div>
+
+                      <sc-if value="{{ r.showState }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto;min-width:150px">
+                        <x-import component-from-global-scope="AtomoDesignSystem_30859f.Tag" hint-size="auto,22px" variant="{{ r.tagVariant }}" color="{{ r.tagColor }}" dot="{{ true }}">{{ r.stateLabel }}</x-import>
+                        <sc-if value="{{ r.hasFoot }}" hint-placeholder-val="{{ false }}">
+                          <span style="text-align:right;white-space:nowrap;font:var(--type-caption);color:var(--text-tertiary)">{{ r.foot }}</span>
+                        </sc-if>
+                      </div>
+                      </sc-if>
+                    </div>
+
+                  </div>
+
+                  <sc-if value="{{ r.hasNote }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 16px;border-top:1px solid var(--border-split);background:{{ r.noteBg }}">
+                      <span style="font:var(--type-caption);color:{{ r.noteColor }}">Se han detectado cambios en el cierre de este periodo provenientes del sistema de origen</span>
+                    </div>
+                  </sc-if>
+                  </div>
+                  <div class="cierre-chevron" style="display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:48px;border-left:1px solid var(--border-split);color:var(--text-tertiary)">
+                    <x-import component-from-global-scope="AtomoDesignSystem_30859f.Icon" hint-size="16px,16px" name="chevron-right" size="{{ 18 }}"></x-import>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface-card);border:1px solid var(--border-split);border-radius:8px;box-shadow:0 1px 2px 0 rgba(0,0,0,0.06),0 1px 3px 0 rgba(0,0,0,0.10)">
+              <x-import component-from-global-scope="AtomoDesignSystem_30859f.EmptyState" hint-size="100%,220px" variant="{{ emptyVariant }}" title="{{ emptyTitle }}" description="{{ emptyDesc }}"></x-import>
+            </div>
+          </sc-if>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <x-import component-from-global-scope="antd.Drawer" hint-size="0px,0px" open="{{ modalOpen }}" title="{{ modalTitle }}" width="{{ 560 }}" placement="right" on-close="{{ closeModal }}" destroy-on-close="{{ true }}" styles="{{ drawerStyles }}" extra="{{ drawerExtra }}">
+    <div style="display:flex;flex-direction:column;height:100%;font:var(--type-body);color:var(--text-body)">
+      <div style="flex:1 1 auto;overflow:auto;padding:24px">
+      <sc-if value="{{ modalShowOpenInfo }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:10px;padding-bottom:16px;border-bottom:1px solid var(--border-split)">
+        <x-import component-from-global-scope="AtomoDesignSystem_30859f.Tag" hint-size="auto,22px" variant="{{ modalTagVariant }}" color="{{ modalTagColor }}" dot="{{ true }}">{{ modalState }}</x-import>
+        <span style="font:var(--type-caption);color:var(--text-tertiary)">{{ modalMeta }}</span>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ modalShowCaratula }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px solid var(--border-split);border-radius:2px;background:var(--surface-card)">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:24px 24px 20px;border-bottom:1px solid var(--border-split)">
+            <span style="font:var(--type-caption);letter-spacing:.4px;text-transform:uppercase;color:var(--text-tertiary);text-align:center">{{ caratulaCompany }}</span>
+            <span style="font:var(--type-section-title);font-weight:600;color:var(--text-heading);text-align:center;text-wrap:pretty">{{ caratulaTitle }}</span>
+            <span style="font:var(--type-caption);color:var(--text-secondary)">{{ caratulaDate }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;padding:8px 24px 16px">
+            <sc-for list="{{ caratulaRows }}" as="c" hint-placeholder-count="4">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px dotted var(--border-split)">
+                <span style="font:var(--type-table-cell);color:var(--text-body)">{{ c.label }}</span>
+                <span style="font:var(--type-table-cell);font-variant-numeric:tabular-nums;color:var(--text-heading)">{{ c.value }}</span>
+              </div>
+            </sc-for>
+            <sc-for list="{{ caratulaSaldos }}" as="c" hint-placeholder-count="2">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--border-split)">
+                <span style="font:var(--type-table-cell);font-weight:600;color:var(--text-heading)">{{ c.label }}</span>
+                <span style="font:var(--type-body);font-weight:600;font-variant-numeric:tabular-nums;color:var(--text-heading)">{{ c.value }}</span>
+              </div>
+            </sc-for>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-top:12px;padding:10px 12px;border-radius:2px;background:{{ caratulaDiffBg }}">
+              <span style="font:var(--type-table-cell);font-weight:600;color:{{ caratulaDiffColor }}">Diferencia</span>
+              <span style="font:var(--type-body);font-weight:600;font-variant-numeric:tabular-nums;color:{{ caratulaDiffColor }}">{{ caratulaDiff }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:32px;padding-top:8px">
+              <span style="font:var(--type-caption);color:var(--text-tertiary);letter-spacing:.4px;text-transform:uppercase">Firma del responsable del cierre</span>
+              <div style="display:flex;flex-direction:column;align-items:center;min-width:260px;max-width:100%">
+                <div style="display:flex;align-items:flex-end;justify-content:center;height:52px">
+                  <span style="font-family:'Mrs Saint Delafield',cursive;font-size:36px;line-height:1;color:var(--slate-8);transform:rotate(-3deg);white-space:nowrap">{{ caratulaSignName }}</span>
+                </div>
+                <div style="align-self:stretch;border-top:1px solid var(--text-secondary)"></div>
+                <span style="margin-top:6px;font:var(--type-table-cell);font-weight:600;color:var(--text-heading);text-align:center">{{ caratulaSignName }}</span>
+                <span style="margin-top:2px;font:var(--type-caption);color:var(--text-tertiary);text-align:center">{{ caratulaSignRole }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ modalHasDeps }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:16px 0;border-bottom:1px solid var(--border-split)">
+        <div style="margin-bottom:10px;font:var(--type-table-header);letter-spacing:.2px;color:var(--text-secondary)">Dependencias</div>
+        <div style="display:grid;grid-template-columns:1fr auto;border:1px solid var(--border-split);border-radius:2px;overflow:hidden">
+          <div style="padding:9px 12px;background:var(--surface-sunken);font:var(--type-table-header);letter-spacing:.2px;color:var(--text-secondary)">Cierre</div>
+          <div style="padding:9px 12px;background:var(--surface-sunken);font:var(--type-table-header);letter-spacing:.2px;color:var(--text-secondary);text-align:right">Estatus</div>
+          <sc-for list="{{ modalDeps }}" as="d" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;padding:9px 12px;border-top:1px solid var(--border-split);font:var(--type-table-cell);color:var(--text-heading)">{{ d.name }}</div>
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;padding:9px 12px;border-top:1px solid var(--border-split)">
+              <span style="width:6px;height:6px;border-radius:50%;background:{{ d.color }}"></span>
+              <span style="font:var(--type-table-cell);color:{{ d.color }}">{{ d.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ modalHasNote }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-top:16px;padding:8px 12px;border-radius:6px;background:{{ modalNoteBg }}">
+          <x-import component-from-global-scope="AtomoDesignSystem_30859f.Icon" hint-size="14px,14px" name="{{ modalNoteIcon }}" size="{{ 14 }}" color="{{ modalNoteColor }}" style="{{ modalNoteIconStyle }}"></x-import>
+          <span style="font:var(--type-caption);color:{{ modalNoteColor }}">{{ modalNoteText }}</span>
+        </div>
+      </sc-if>
+
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:0 0 auto;flex-wrap:wrap;padding:16px 24px;border-top:1px solid var(--border-split);background:var(--surface-card)">
+          <x-import component-from-global-scope="AtomoDesignSystem_30859f.Button" hint-size="auto,32px" variant="outline" tone="neutral" on-click="{{ closeModal }}">Cerrar</x-import>
+          <x-import component-from-global-scope="AtomoDesignSystem_30859f.Button" hint-size="auto,32px" variant="outline" tone="neutral" icon="download" disabled="{{ downloadDisabled }}" on-click="{{ closeModal }}">Descargar carátula</x-import>
+          <x-import component-from-global-scope="AtomoDesignSystem_30859f.Button" hint-size="auto,32px" icon="signature" disabled="{{ generateDisabled }}" on-click="{{ closeModal }}">Generar cierre</x-import>
+        </div>
+      </div>
+    </div>
+  </x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showAreaBadges&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Navegación&quot;},&quot;showOrigin&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lista&quot;}}">
+const AREAS = [
+  ['bancos', 'Bancos', 'landmark'],
+  ['cxp', 'Cuentas por pagar', 'receipt'],
+  ['cxc', 'Cuentas por cobrar', 'hand-coins'],
+  ['contabilidad', 'Contabilidad', 'book-open'],
+  ['tesoreria', 'Tesorería', 'wallet'],
+  ['cobranza', 'Cobranza intercompañía', 'arrow-left-right'],
+  ['auditoria', 'Auditoría', 'shield-check'],
+  ['compras', 'Compras', 'shopping-cart'],
+  ['ventas', 'Ventas', 'trending-up'],
+  ['finanzas', 'Finanzas', 'pie-chart'],
+  ['mercadotecnia', 'Mercadotecnia', 'megaphone'],
+  ['sistemas', 'Sistemas', 'server'],
+  ['rh', 'Recursos humanos', 'users']
+];
+
+const COMPANIES = [
+  'CORPORATIVO EMPRENDEDOR DEL NOROESTE, SA DE CV 2017',
+  'PROYECTO ADAMS',
+  'INMOBILIARIA LAS PALMAS MAYA S.A. DE C.V.',
+  'OPERADORA DE ESTACIONES DE SERVICIO, 20-20 S.A. DE C.V.',
+  'GASOLINERA Y LUBRICANTES EL CRUCERO, S.A. DE C.V.',
+  'SERVICIO EL VIGIA, S,A, DE C.V.',
+  'DISTRIBUIDORA GUAYMAS EMPALME, S. A. DE C. V.',
+  'GLV GASOLINERA LAS VILLAS, S. A. DE C. V.',
+  'DIFESA, S. A. DE C. V.',
+  'SERVICIO DELICIAS S.A. DE C.V.',
+  'GASERVICIO EL LLANO SA DE CV',
+  'AUTO SERVICIO CASA MAGNA, SA DE CV 2017',
+  'ECO DIRECCION PROFESIONAL, SC 2017',
+  'ENERGETICOS EN RED ELECTRONICA 2023',
+  'INMOBILIARIA ROPRE, SA DE CV 2017',
+  'Pruebas',
+  'OPERADORA DE FONDOS CORPORATIVOS 2019',
+  'ROPRE ENTEPRISES LLC'
+];
+
+const PERIODS = [
+  { k: '2025-11', title: 'Noviembre 2025', label: 'noviembre 2025', open: true },
+  { k: '2025-10', title: 'Octubre 2025', label: 'octubre 2025' },
+  { k: '2025-09', title: 'Septiembre 2025', label: 'septiembre 2025' }
+];
+
+const S = {
+  sinCierre: { label: 'Sin cierre', tag: 'neutral', variant: 'filled', icon: 'circle-dashed', color: 'var(--text-tertiary)', rail: 'var(--gray-5)', bg: 'var(--surface-sunken)' },
+  proceso:   { label: 'En proceso', tag: 'primary', variant: 'filled', icon: 'loader', color: 'var(--color-primary)', rail: 'var(--color-primary)', bg: 'var(--color-primary-bg)' },
+  cambios:   { label: 'Con cambios', tag: 'warning', variant: 'filled', icon: 'circle-alert', color: 'var(--color-warning-text)', rail: 'var(--color-warning)', bg: 'var(--color-warning-bg)' },
+  cerrado:   { label: 'Cerrado', tag: 'success', variant: 'filled', icon: 'circle-check', color: 'var(--color-success)', rail: 'var(--color-success)', bg: 'var(--color-success-bg)' }
+};
+
+const GLYPH_BASE = 'https://cdn.jsdelivr.net/npm/lucide-static@0.469.0/icons/';
+function glyph(name, color, size) {
+  const url = GLYPH_BASE + name + '.svg';
+  return React.createElement('span', { style: {
+    display: 'inline-block', flex: '0 0 auto', width: size || 16, height: size || 16, backgroundColor: color,
+    WebkitMaskImage: 'url(' + url + ')', maskImage: 'url(' + url + ')',
+    WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat',
+    WebkitMaskPosition: 'center', maskPosition: 'center',
+    WebkitMaskSize: 'contain', maskSize: 'contain'
+  } });
+}
+
+function areasFor(company) {
+  if (company === COMPANIES[0]) return AREAS;
+  const seed = company.length;
+  const subset = AREAS.filter((a, i) => ((seed + i * 5) % 7) > 1);
+  return subset.length >= 4 ? subset : AREAS.slice(0, 5);
+}
+
+const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+const MONEY_LINES = [
+  'Depósitos en tránsito',
+  'Nuestros créditos no correspondidos',
+  'Sus cargos no correspondidos',
+  'Sus créditos no correspondidos'
+];
+
+function money(n) {
+  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function buildCaratula(md, p) {
+  const empty = { date: '', rows: [], saldos: [], diff: money(0), diffZero: true, signName: '', signRole: '' };
+  if (!md) return empty;
+  const raw = md.foot && md.foot.indexOf('·') >= 0 ? md.foot.split('·').pop().trim() : '';
+  const MES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const dm = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  const foot = dm ? dm[1] + ' ' + MES[parseInt(dm[2], 10) - 1] + ' ' + dm[3] : raw;
+  const signer = md.foot ? md.foot.replace('Formalizó', '').split('·')[0].trim() : '';
+  const SIGNERS = {
+    'R. Cázares': 'Ricardo Cázares Beltrán',
+    'M. Herrera': 'Mariana Herrera Ortiz',
+    'J. Mondragón': 'Jorge Mondragón Ruiz',
+    'A. Salas': 'Adriana Salas Domínguez'
+  };
+  const seed = md.name.length * 7919;
+  const base = 1200000 + (seed % 8600000) + (seed % 97) / 100;
+  const gap = md.st === 'cambios' ? (seed % 4300) + 118.4 : 0;
+  return {
+    date: foot || (p ? p.title : ''),
+    rows: MONEY_LINES.map(l => ({ label: l, value: money(0) })),
+    saldos: [
+      { label: 'Saldo conciliación', value: money(base) },
+      { label: 'Saldo contabilidad', value: money(base - gap) }
+    ],
+    diff: money(gap),
+    diffZero: gap === 0,
+    signName: SIGNERS[signer] || signer || 'Ricardo Cázares Beltrán',
+    signRole: 'Responsable de conciliaciones bancarias'
+  };
+}
+
+const DEPS = ['Cierre auditoría', 'Cierre cuentas por cobrar', 'Cierre tesorería', 'Cierre suflotilla'];
+
+const NOTE = {
+  warn:  { bg: 'var(--color-warning-bg)', color: 'var(--color-warning-text)', icon: 'triangle-alert' },
+  error: { bg: 'var(--color-error-bg)', color: 'var(--color-error-text)', icon: 'circle-x' },
+  dep:   { bg: 'var(--color-primary-bg)', color: 'var(--color-primary-text)', icon: 'git-merge' },
+  mute:  { bg: 'var(--surface-sunken)', color: 'var(--text-secondary)', icon: 'clock' }
+};
+
+const DATA = {
+  contabilidad: [
+    { p: '2025-11', name: 'Cierre de facturación', per: '01–15 Noviembre 2025', freq: 'Quincenal', src: 'ERP corporativo', st: 'cerrado',
+      m: [['Facturas emitidas', '1,473'], ['Importe total', '$8,420,500.00']], foot: 'Formalizó J. Mondragón · 17/11/2025' },
+    { p: '2025-11', name: 'Cierre de facturación', per: '16–30 Noviembre 2025', freq: 'Quincenal', src: 'ERP corporativo', st: 'proceso',
+      m: [['Facturas emitidas', '1,208'], ['Importe total', '$6,980,140.00']] },
+    { p: '2025-11', name: 'Cierre de pólizas contables', per: 'Noviembre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'proceso',
+      m: [['Pólizas registradas', '3,140'], ['Pólizas sin afectar', '26']] },
+    { p: '2025-11', name: 'Amarre de ingresos para IVA', per: 'Noviembre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'cambios',
+      m: [['Diferencia contra facturación', '$0.00'], ['Ingresos declarados', '$12,304,880.00']],
+      foot: 'Formalizó M. Herrera · 02/12/2025',
+      note: { t: 'warn', x: 'Se registraron 4 movimientos en el sistema origen después de formalizar el cierre. La evidencia del 02/12/2025 se conserva sin cambios.' } },
+    { p: '2025-11', name: 'Conciliación intercompañía', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de conciliaciones', st: 'cambios',
+      m: [['Diferencia', '$18,430.00'], ['Partidas sin identificar', '7']],
+      note: { t: 'warn', x: 'La diferencia excede el umbral autorizado de $5,000.00. No es posible formalizar hasta resolverla en el sistema origen.' } },
+    { p: '2025-11', name: 'Depreciación de activo fijo', per: 'Noviembre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'sinCierre',
+      m: [['Activos en cálculo', '1,842']],
+      note: { t: 'dep', x: 'Pendiente de 2 cierres relacionados: pólizas contables y amarre de ingresos para IVA.' } },
+    { p: '2025-11', name: 'Conciliación contable de nómina', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de nómina', st: 'sinCierre',
+      m: [],
+      note: { t: 'error', x: 'No se recibió información del sistema origen. Último intento de sincronización: 03/12/2025 02:10.' } },
+    { p: '2025-11', name: 'Cierre anual de estados financieros', per: 'Ejercicio 2025', freq: 'Anual', src: 'ERP corporativo', st: 'sinCierre',
+      m: [['Cierres mensuales formalizados', '10 de 12']],
+      note: { t: 'mute', x: 'Disponible a partir del 01/01/2026, cuando los 12 cierres mensuales del ejercicio estén formalizados.' } },
+    { p: '2025-10', name: 'Cierre de facturación', per: '01–15 Octubre 2025', freq: 'Quincenal', src: 'ERP corporativo', st: 'cerrado',
+      m: [['Facturas emitidas', '1,392'], ['Importe total', '$7,910,220.00']], foot: 'Formalizó J. Mondragón · 17/10/2025' },
+    { p: '2025-10', name: 'Cierre de facturación', per: '16–31 Octubre 2025', freq: 'Quincenal', src: 'ERP corporativo', st: 'cerrado',
+      m: [['Facturas emitidas', '1,447'], ['Importe total', '$8,102,660.00']], foot: 'Formalizó J. Mondragón · 03/11/2025' },
+    { p: '2025-10', name: 'Cierre de pólizas contables', per: 'Octubre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'cerrado',
+      m: [['Pólizas registradas', '3,022'], ['Pólizas sin afectar', '0']], foot: 'Formalizó M. Herrera · 05/11/2025' },
+    { p: '2025-10', name: 'Amarre de ingresos para IVA', per: 'Octubre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'cerrado',
+      m: [['Diferencia contra facturación', '$0.00'], ['Ingresos declarados', '$11,884,300.00']], foot: 'Formalizó M. Herrera · 06/11/2025' },
+    { p: '2025-10', name: 'Depreciación de activo fijo', per: 'Octubre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'cerrado',
+      m: [['Activos depreciados', '1,838']], foot: 'Formalizó A. Salas · 07/11/2025' }
+  ],
+  bancos: [
+    { p: '2025-11', name: 'Conciliación bancaria cuenta BBVA 9640', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de conciliaciones', st: 'cerrado',
+      months: 9, stamp: '02 ene 2026 · 2:03 PM', foot: 'Formalizó R. Cázares · 03/12/2025' },
+    { p: '2025-11', name: 'Conciliación bancaria cuenta BNTE 5423', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de conciliaciones', st: 'proceso',
+      m: [['Diferencia', '$0.00'], ['Movimientos conciliados', '842 de 842']] },
+    { p: '2025-11', name: 'Conciliación bancaria cuenta INV BBVA 2933', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de conciliaciones', st: 'proceso',
+      m: [['Diferencia', '$18,240.00'], ['Movimientos conciliados', '96 de 118']] },
+    { p: '2025-11', name: 'Conciliación bancaria cuenta INV BNTE 6426', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de conciliaciones', st: 'cerrado',
+      m: [['Diferencia', '$0.00'], ['Movimientos conciliados', '204 de 204']], foot: 'Formalizó R. Cázares · 02/12/2025' },
+    { p: '2025-11', name: 'Conciliación bancaria cuenta MERRILLYNCH 3516', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de conciliaciones', st: 'cambios',
+      m: [['Diferencia', 'USD 4,310.00'], ['Movimientos sin identificar', '6']],
+      note: { t: 'warn', x: '6 movimientos no tienen contraparte en el estado de cuenta. Requieren clasificación en el sistema origen.' } },
+    { p: '2025-11', name: 'Conciliación bancaria cuenta SBIN 3497', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de conciliaciones', st: 'proceso',
+      m: [['Diferencia', '$2,905.00'], ['Movimientos conciliados', '512 de 548']] },
+    { p: '2025-11', name: 'Conciliación bancaria cuenta SBIN 6620', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de conciliaciones', st: 'sinCierre',
+      m: [['Movimientos por conciliar', '388']] },
+    { p: '2025-11', name: 'Conciliación bancaria cuenta INVERSION BNTE 3935', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de conciliaciones', st: 'cambios',
+      m: [['Diferencia', '$0.00'], ['Movimientos conciliados', '74 de 74']], foot: 'Formalizó M. Herrera · 01/12/2025',
+      note: { t: 'warn', x: 'Se registraron 2 movimientos en el sistema origen después de formalizar el cierre.' } },
+  ],
+  cxp: [
+    { p: '2025-11', name: 'Cierre de cuentas por pagar', per: 'Noviembre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'proceso',
+      m: [['Saldo por pagar', '$23,884,300.00'], ['Proveedores con saldo', '148']] },
+    { p: '2025-11', name: 'Anticipos a proveedores', per: 'Noviembre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'proceso',
+      m: [['Anticipos aplicados', '92 de 118'], ['Importe pendiente', '$1,940,220.00']] },
+    { p: '2025-11', name: 'Provisiones del periodo', per: 'Noviembre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'sinCierre',
+      m: [['Provisiones capturadas', '0']],
+      note: { t: 'dep', x: 'Pendiente de 1 cierre relacionado: cierre de cuentas por pagar.' } },
+    { p: '2025-11', name: 'Pagos programados', per: '24–30 Noviembre 2025', freq: 'Semanal', src: 'Portal de pagos', st: 'cerrado',
+      m: [['Pagos ejecutados', '312'], ['Importe', '$4,120,880.00']], foot: 'Formalizó L. Ontiveros · 01/12/2025' },
+    { p: '2025-11', name: 'Retenciones a proveedores', per: 'Noviembre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'cambios',
+      m: [['Facturas sin retención', '9'], ['Importe', '$86,400.00']],
+      note: { t: 'warn', x: '9 facturas no tienen retención calculada. Corrige en el ERP antes de formalizar.' } },
+    { p: '2025-10', name: 'Cierre de cuentas por pagar', per: 'Octubre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'cerrado',
+      m: [['Saldo por pagar', '$21,470,110.00'], ['Proveedores con saldo', '141']], foot: 'Formalizó L. Ontiveros · 04/11/2025' },
+    { p: '2025-10', name: 'Pagos programados', per: '20–26 Octubre 2025', freq: 'Semanal', src: 'Portal de pagos', st: 'cerrado',
+      m: [['Pagos ejecutados', '287'], ['Importe', '$3,845,900.00']], foot: 'Formalizó L. Ontiveros · 27/10/2025' }
+  ],
+  auditoria: [
+    { p: '2025-11', name: 'Muestreo de auditoría interna', per: '4.º trimestre 2025', freq: 'Trimestral', src: 'Sistema de auditoría', st: 'proceso',
+      m: [['Observaciones abiertas', '2'], ['Expedientes revisados', '34 de 40']] },
+    { p: '2025-11', name: 'Revisiones de la autoridad', per: 'Expediente SAT-2025-0431', freq: 'Eventual', src: 'Expedientes fiscales', st: 'cambios',
+      m: [['Requerimientos pendientes', '1'], ['Vence', '12/12/2025']],
+      note: { t: 'warn', x: 'El requerimiento vence en 9 días. Falta cargar la evidencia solicitada en el expediente.' } },
+    { p: '2025-11', name: 'Control interno de procesos', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de auditoría', st: 'cerrado',
+      m: [['Controles evaluados', '46'], ['Hallazgos', '0']], foot: 'Formalizó P. Íñiguez · 02/12/2025' },
+    { p: '2025-10', name: 'Control interno de procesos', per: 'Octubre 2025', freq: 'Mensual', src: 'Sistema de auditoría', st: 'cerrado',
+      m: [['Controles evaluados', '46'], ['Hallazgos', '1']], foot: 'Formalizó P. Íñiguez · 03/11/2025' }
+  ],
+  cobranza: [
+    { p: '2025-11', name: 'Saldos intercompañía', per: 'Noviembre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'cambios',
+      m: [['Diferencia entre compañías', '$86,500.00'], ['Compañías conciliadas', '6 de 8']],
+      note: { t: 'warn', x: 'Dos compañías reportan saldos distintos para las mismas operaciones.' } },
+    { p: '2025-11', name: 'Cobranza aplicada', per: '16–30 Noviembre 2025', freq: 'Quincenal', src: 'Cuentas por cobrar', st: 'proceso',
+      m: [['Cobranza aplicada', '$9,340,200.00'], ['Partidas sin aplicar', '23']] },
+    { p: '2025-11', name: 'Cuentas por cobrar intercompañía', per: 'Noviembre 2025', freq: 'Mensual', src: 'Cuentas por cobrar', st: 'sinCierre',
+      m: [['Saldo por cobrar', '$14,208,700.00']] },
+    { p: '2025-10', name: 'Saldos intercompañía', per: 'Octubre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'cerrado',
+      m: [['Diferencia entre compañías', '$0.00'], ['Compañías conciliadas', '8 de 8']], foot: 'Formalizó D. Barrera · 05/11/2025' },
+    { p: '2025-10', name: 'Cobranza aplicada', per: '16–31 Octubre 2025', freq: 'Quincenal', src: 'Cuentas por cobrar', st: 'cerrado',
+      m: [['Cobranza aplicada', '$10,120,400.00'], ['Partidas sin aplicar', '0']], foot: 'Formalizó D. Barrera · 03/11/2025' }
+  ],
+  tesoreria: [
+    { p: '2025-11', name: 'Posición de tesorería', per: '28 Noviembre 2025', freq: 'Diario', src: 'Tesorería en línea', st: 'cerrado',
+      m: [['Disponible consolidado', '$61,340,900.00'], ['Cuentas incluidas', '17']], foot: 'Formalizó R. Cázares · 29/11/2025' },
+    { p: '2025-11', name: 'Inversiones y vencimientos', per: 'Noviembre 2025', freq: 'Mensual', src: 'Mesa de dinero', st: 'proceso',
+      m: [['Instrumentos vigentes', '9'], ['Monto invertido', '$28,500,000.00']] },
+    { p: '2025-11', name: 'Flujo comprometido', per: 'Noviembre 2025', freq: 'Mensual', src: 'Tesorería en línea', st: 'proceso',
+      m: [['Compromisos capturados', '204'], ['Importe', '$18,760,300.00']] },
+    { p: '2025-10', name: 'Inversiones y vencimientos', per: 'Octubre 2025', freq: 'Mensual', src: 'Mesa de dinero', st: 'cerrado',
+      m: [['Instrumentos vigentes', '8'], ['Monto invertido', '$26,100,000.00']], foot: 'Formalizó R. Cázares · 04/11/2025' }
+  ],
+  cxc: [
+    { p: '2025-11', name: 'Cierre de cuentas por cobrar', per: 'Noviembre 2025', freq: 'Mensual', src: 'Cuentas por cobrar', st: 'proceso',
+      m: [['Cartera total', '$31,908,450.00'], ['Clientes con saldo', '412']] },
+    { p: '2025-11', name: 'Estimación de cuentas incobrables', per: 'Noviembre 2025', freq: 'Mensual', src: 'Cuentas por cobrar', st: 'sinCierre',
+      m: [['Cartera vencida', '$2,140,600.00']],
+      note: { t: 'dep', x: 'Pendiente de 1 cierre relacionado: cierre de cuentas por cobrar.' } },
+    { p: '2025-10', name: 'Cierre de cuentas por cobrar', per: 'Octubre 2025', freq: 'Mensual', src: 'Cuentas por cobrar', st: 'cerrado',
+      m: [['Cartera total', '$29,744,120.00'], ['Clientes con saldo', '398']], foot: 'Formalizó S. Peralta · 04/11/2025' }
+  ],
+  compras: [
+    { p: '2025-11', name: 'Cierre de órdenes de compra', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de compras', st: 'proceso',
+      m: [['Órdenes cerradas', '318 de 344'], ['Importe ejercido', '$19,420,700.00']] },
+    { p: '2025-11', name: 'Recepciones sin factura', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de compras', st: 'cambios',
+      m: [['Recepciones pendientes', '23'], ['Importe', '$1,208,300.00']],
+      note: { t: 'warn', x: '23 recepciones llevan más de 30 días sin factura asociada.' } },
+    { p: '2025-10', name: 'Cierre de órdenes de compra', per: 'Octubre 2025', freq: 'Mensual', src: 'Sistema de compras', st: 'cerrado',
+      m: [['Órdenes cerradas', '351 de 351'], ['Importe ejercido', '$20,880,100.00']], foot: 'Formalizó G. Villagómez · 04/11/2025' }
+  ],
+  ventas: [
+    { p: '2025-11', name: 'Cierre de ventas del periodo', per: '16–30 Noviembre 2025', freq: 'Quincenal', src: 'Punto de venta', st: 'proceso',
+      m: [['Ventas netas', '$27,640,900.00'], ['Tickets', '48,204']] },
+    { p: '2025-11', name: 'Cierre de ventas del periodo', per: '01–15 Noviembre 2025', freq: 'Quincenal', src: 'Punto de venta', st: 'cerrado',
+      m: [['Ventas netas', '$25,110,480.00'], ['Tickets', '44,918']], foot: 'Formalizó N. Aguirre · 17/11/2025' },
+    { p: '2025-11', name: 'Devoluciones y bonificaciones', per: 'Noviembre 2025', freq: 'Mensual', src: 'Punto de venta', st: 'proceso',
+      m: [['Devoluciones', '1,204'], ['Importe', '$684,300.00']] },
+    { p: '2025-10', name: 'Cierre de ventas del periodo', per: '16–31 Octubre 2025', freq: 'Quincenal', src: 'Punto de venta', st: 'cerrado',
+      m: [['Ventas netas', '$26,340,220.00'], ['Tickets', '46,880']], foot: 'Formalizó N. Aguirre · 03/11/2025' }
+  ],
+  finanzas: [
+    { p: '2025-11', name: 'Estados financieros del periodo', per: 'Noviembre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'sinCierre',
+      m: [['Compañías consolidadas', '0 de 8']],
+      note: { t: 'dep', x: 'Pendiente de 3 cierres relacionados en contabilidad, bancos y cuentas por pagar.' } },
+    { p: '2025-11', name: 'Presupuesto contra ejercido', per: 'Noviembre 2025', freq: 'Mensual', src: 'Planeación financiera', st: 'proceso',
+      m: [['Centros de costo revisados', '38 de 52'], ['Variación acumulada', '4.2%']] },
+    { p: '2025-10', name: 'Estados financieros del periodo', per: 'Octubre 2025', freq: 'Mensual', src: 'ERP corporativo', st: 'cerrado',
+      m: [['Compañías consolidadas', '8 de 8']], foot: 'Formalizó C. Ruvalcaba · 10/11/2025' }
+  ],
+  mercadotecnia: [
+    { p: '2025-11', name: 'Cierre de inversión publicitaria', per: 'Noviembre 2025', freq: 'Mensual', src: 'Plataforma de campañas', st: 'cerrado',
+      m: [['Inversión ejercida', '$2,384,700.00'], ['Campañas cerradas', '14 de 14']], foot: 'Formalizó T. Escobedo · 02/12/2025' },
+    { p: '2025-11', name: 'Cierre de patrocinios y eventos', per: 'Noviembre 2025', freq: 'Mensual', src: 'Plataforma de campañas', st: 'cerrado',
+      m: [['Eventos comprobados', '6 de 6'], ['Importe', '$940,200.00']], foot: 'Formalizó T. Escobedo · 02/12/2025' },
+    { p: '2025-10', name: 'Cierre de inversión publicitaria', per: 'Octubre 2025', freq: 'Mensual', src: 'Plataforma de campañas', st: 'cerrado',
+      m: [['Inversión ejercida', '$2,110,400.00'], ['Campañas cerradas', '12 de 12']], foot: 'Formalizó T. Escobedo · 04/11/2025' }
+  ],
+  sistemas: [
+    { p: '2025-11', name: 'Cierre de respaldos mensuales', per: 'Noviembre 2025', freq: 'Mensual', src: 'Centro de datos', st: 'proceso',
+      m: [['Respaldos verificados', '30 de 30'], ['Fallas', '0']] },
+    { p: '2025-11', name: 'Bitácora de accesos privilegiados', per: 'Noviembre 2025', freq: 'Mensual', src: 'Control de accesos', st: 'cambios',
+      m: [['Accesos sin justificar', '5']],
+      note: { t: 'warn', x: '5 accesos privilegiados no tienen ticket asociado.' } },
+    { p: '2025-10', name: 'Cierre de respaldos mensuales', per: 'Octubre 2025', freq: 'Mensual', src: 'Centro de datos', st: 'cerrado',
+      m: [['Respaldos verificados', '31 de 31'], ['Fallas', '0']], foot: 'Formalizó E. Trujillo · 03/11/2025' }
+  ],
+  rh: [
+    { p: '2025-11', name: 'Cierre de nómina', per: '16–30 Noviembre 2025', freq: 'Quincenal', src: 'Sistema de nómina', st: 'cerrado',
+      m: [['Trabajadores pagados', '1,842'], ['Importe neto', '$14,206,300.00']], foot: 'Formalizó V. Estrada · 01/12/2025' },
+    { p: '2025-11', name: 'Provisión de prestaciones', per: 'Noviembre 2025', freq: 'Mensual', src: 'Sistema de nómina', st: 'proceso',
+      m: [['Provisión del mes', '$3,480,900.00']] },
+    { p: '2025-10', name: 'Cierre de nómina', per: '16–31 Octubre 2025', freq: 'Quincenal', src: 'Sistema de nómina', st: 'cerrado',
+      m: [['Trabajadores pagados', '1,838'], ['Importe neto', '$14,088,140.00']], foot: 'Formalizó V. Estrada · 01/11/2025' }
+  ]
+};
+
+const FILTERS = [
+  ['todos', 'Todos', () => true],
+  ['sinCierre', 'Sin cierre', r => r.st === 'sinCierre'],
+  ['proceso', 'En proceso', r => r.st === 'proceso'],
+  ['cambios', 'Con cambios', r => r.st === 'cambios'],
+  ['cerrado', 'Cerrado', r => r.st === 'cerrado']
+];
+
+const SPIN = { animation: 'atomo-spin 1.4s linear infinite' };
+
+class Component extends DCLogic {
+  state = {
+    areaKey: 'bancos',
+    periodIdx: 0,
+    filter: 'todos',
+    query: '',
+    historyOpen: false,
+    modal: null,
+    companyKey: COMPANIES[0],
+    navWidth: 224,
+    navCollapsed: false,
+    ready: typeof window !== 'undefined' && !!window.antd
+  };
+
+  componentDidMount() {
+    if (!this.state.ready) {
+      this._t = setInterval(() => {
+        if (window.antd) { clearInterval(this._t); this.setState({ ready: true }); }
+      }, 100);
+    }
+  }
+  componentWillUnmount() { clearInterval(this._t); }
+
+  areaRows(key) { return DATA[key] || []; }
+
+  startResize = e => {
+    e.preventDefault();
+    const x0 = e.clientX, w0 = this.state.navWidth;
+    const move = ev => this.setState({ navWidth: Math.max(224, Math.min(460, w0 + ev.clientX - x0)) });
+    const up = () => {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+    document.body.style.cursor = 'ew-resize';
+    document.body.style.userSelect = 'none';
+  };
+
+  decorate(r, i) {
+    const s = S[r.st];
+    const n = r.note ? NOTE[r.note.t] : null;
+    const m1 = r.m && r.m[0], m2 = r.m && r.m[1];
+    return {
+      key: r.name + r.per + i,
+      name: r.name,
+      per: r.per,
+      meta: ['Periodo: ' + r.per + ' · ' + r.freq, this.props.showOrigin === false ? null : 'Origen: ' + r.src].filter(Boolean).join(' · '),
+      desc: r.desc || '',
+      hasDesc: !!r.desc,
+      icon: s.icon,
+      iconColor: s.color,
+      railColor: s.rail,
+      iconBg: s.bg,
+      iconStyle: r.st === 'proceso' ? SPIN : undefined,
+      nameColor: 'var(--text-heading)',
+      stateLabel: s.label,
+      tagColor: s.tag,
+      tagVariant: s.variant,
+      hasM1: !!m1, m1l: m1 ? m1[0] : '', m1v: m1 ? m1[1] : '',
+      m1c: r.st === 'cambios' ? 'var(--color-warning-text)' : 'var(--text-heading)',
+      hasM2: !!m2, m2l: m2 ? m2[0] : '', m2v: m2 ? m2[1] : '',
+      noSummary: !m1 && !r.months,
+      hasMonths: !!r.months,
+      showState: !r.months,
+      stamp: r.stamp ? 'Último periodo cerrado por: ' + (r.stampUser || 'R. Cázares') + ' · ' + r.stamp : '',
+      monthChips: (r.months ? MONTHS : []).map((m, mi) => ({
+        key: m,
+        label: m,
+        bg: mi < r.months ? 'var(--color-success)' : 'var(--surface-card)',
+        color: mi < r.months ? '#ffffff' : 'var(--text-secondary)',
+        border: mi < r.months ? 'var(--color-success)' : 'var(--border-base)'
+      })),
+      hasFoot: !!r.foot, foot: r.foot || '',
+      hasNote: !!n && r.st === 'cambios',
+      noteText: r.note ? r.note.x : '',
+      noteIcon: n ? n.icon : 'info',
+      noteBg: n ? n.bg : 'transparent',
+      noteColor: n ? n.color : 'var(--text-secondary)',
+      noteIconStyle: { marginTop: 2 },
+      open: () => this.setState({ modal: r }),
+      key1: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setState({ modal: r }); } }
+    };
+  }
+
+  buildDrawerExtra(st) {
+    const A = typeof window !== 'undefined' && window.antd;
+    const AS = typeof window !== 'undefined' && window.AtomoDesignSystem_30859f;
+    if (!A || !AS) return null;
+    const open = !!st.monthPickerOpen;
+    return React.createElement('div', { style: { position: 'relative', display: 'flex', alignItems: 'center' } },
+      React.createElement('button', {
+        type: 'button', 'aria-label': 'Elegir periodo',
+        onClick: () => this.setState({ monthPickerOpen: !open }),
+        style: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, padding: 0, border: '1px solid var(--border-base)', borderRadius: 'var(--radius-button)', background: 'var(--surface-card)', color: 'var(--text-secondary)', cursor: 'pointer' }
+      }, React.createElement(AS.Icon, { name: 'calendar', size: 16 })),
+      React.createElement('div', { style: { position: 'absolute', top: 34, right: 0, width: 0, height: 0 } },
+        React.createElement(A.DatePicker, {
+          picker: 'month', open: open, allowClear: false, inputReadOnly: true,
+          value: st.monthValue || undefined,
+          onChange: v => this.setState({ monthValue: v, monthPickerOpen: false }),
+          onOpenChange: o => this.setState({ monthPickerOpen: o }),
+          style: { width: 0, height: 0, padding: 0, border: 'none', opacity: 0, pointerEvents: 'none' }
+        })));
+  }
+
+  renderVals() {
+    const st = this.state;
+    const p = PERIODS[st.periodIdx];
+    const all = this.areaRows((areasFor(st.companyKey).find(a => a[0] === st.areaKey) || areasFor(st.companyKey)[0])[0]);
+    const inPeriod = all.filter(r => r.p === p.k);
+    const q = st.query.trim().toLowerCase();
+    const f = FILTERS.find(x => x[0] === st.filter)[2];
+    const rows = inPeriod.filter(f).filter(r => !q ||
+      (r.name + ' ' + r.per + ' ' + r.freq + ' ' + r.src).toLowerCase().indexOf(q) > -1);
+
+    const prev = PERIODS[st.periodIdx + 1];
+    const histRows = prev ? all.filter(r => r.p === prev.k) : [];
+
+    const areaList = areasFor(st.companyKey);
+    const area = areaList.find(a => a[0] === st.areaKey) || areaList[0];
+    const count = n => inPeriod.filter(n).length;
+    const enProceso = count(r => r.st === 'proceso');
+    const conCambios = count(r => r.st === 'cambios');
+    const cerrados = count(r => r.st === 'cerrado');
+    const sinCierre = count(r => r.st === 'sinCierre');
+
+    const meta = [
+      inPeriod.length + (inPeriod.length === 1 ? ' cierre en ' : ' cierres en ') + p.label,
+      sinCierre ? sinCierre + ' sin cierre' : null,
+      enProceso ? enProceso + ' en proceso' : null,
+      conCambios ? conCambios + ' con cambios' : null,
+      cerrados + (cerrados === 1 ? ' cerrado' : ' cerrados')
+    ].filter(Boolean).join(' · ');
+
+    const nav = areaList.map(a => {
+      const own = (DATA[a[0]] || []).filter(r => r.p === PERIODS[0].k);
+      const at = own.filter(r => r.st === 'cambios').length;
+      const abierto = own.filter(r => r.st === 'proceso' || r.st === 'sinCierre').length;
+      const g = at ? ['circle-alert', 'var(--color-warning)']
+        : abierto ? ['loader', 'var(--color-primary)']
+        : own.length ? ['circle-check', 'var(--color-success)']
+        : ['minus-circle', 'var(--text-quaternary)'];
+      return {
+        key: a[0],
+        title: a[1],
+        icon: st.navCollapsed ? g[0] : undefined,
+        label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 6, minWidth: 0, maxWidth: '100%', overflow: 'hidden' } },
+          glyph(g[0], g[1], 16),
+          React.createElement('span', { style: { flex: '1 1 auto', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, a[1])),
+        badge: (this.props.showAreaBadges === false || !at) ? undefined : at
+      };
+    });
+
+    const md = st.modal;
+    const ms = md ? S[md.st] : null;
+    const mn = md && md.note ? NOTE[md.note.t] : null;
+    const car = buildCaratula(md, p);
+    const facts = md ? [{ l: 'Periodo', v: md.per }, { l: 'Frecuencia', v: md.freq }, { l: 'Sistema origen', v: md.src }]
+      .concat((md.m || []).map(x => ({ l: x[0], v: x[1] }))) : [];
+
+    return {
+      areaKey: area[0],
+      areaName: area[1],
+      navItems: [{ type: 'group', label: 'Áreas', children: nav }],
+      sidebarFooter: st.navCollapsed ? undefined : 'Capa global de cierres · v2.4',
+      navWidth: st.navCollapsed ? undefined : st.navWidth,
+      navExpanded: !st.navCollapsed,
+      navIsCollapsed: !!st.navCollapsed,
+      setNavCollapsed: v => this.setState({ navCollapsed: v }),
+      startResize: this.startResize,
+      popupWidth: Math.max(320, (st.navCollapsed ? 224 : st.navWidth) - 32),
+      companyKey: st.companyKey,
+      companyOptions: COMPANIES.map(c => ({ value: c, label: c })),
+      setCompany: k => this.setState({ companyKey: k, areaKey: areasFor(k)[0][0], filter: 'todos', query: '' }),
+      selectArea: k => this.setState({ areaKey: k, filter: 'todos', query: '', historyOpen: false }),
+
+      periodTitle: p.title,
+      periodTagLabel: p.open ? 'Periodo abierto' : 'Periodo histórico',
+      periodTagColor: p.open ? 'success' : 'neutral',
+      periodTagVariant: p.open ? 'filled' : 'dashed',
+      prevDisabled: st.periodIdx >= PERIODS.length - 1,
+      nextDisabled: st.periodIdx === 0,
+      showResetPeriod: st.periodIdx !== 0,
+      olderPeriod: () => this.setState(s => ({ periodIdx: Math.min(PERIODS.length - 1, s.periodIdx + 1), historyOpen: false })),
+      newerPeriod: () => this.setState(s => ({ periodIdx: Math.max(0, s.periodIdx - 1), historyOpen: false })),
+      resetPeriod: () => this.setState({ periodIdx: 0, historyOpen: false }),
+
+      headerMeta: meta,
+      filterKey: st.filter,
+      filterItems: FILTERS.map(x => ({ key: x[0], label: x[1], badge: x[0] === 'todos' ? inPeriod.length : count(x[2]) })),
+      setFilter: k => this.setState({ filter: k }),
+      query: st.query,
+      setQuery: v => this.setState({ query: v || '' }),
+
+      rows: rows.map((r, i) => this.decorate(r, i)),
+      hasRows: rows.length > 0,
+      isEmpty: rows.length === 0,
+      emptyVariant: inPeriod.length === 0 ? 'empty' : 'filtered',
+      emptyTitle: inPeriod.length === 0 ? 'Sin cierres en este periodo' : 'Ningún cierre coincide',
+      emptyDesc: inPeriod.length === 0
+        ? 'Esta área no tiene cierres definidos para ' + p.label + '. Consulta otro periodo.'
+        : 'Limpia la búsqueda o el filtro de estado para ver todos los cierres del periodo.',
+
+      hasHistory: histRows.length > 0,
+      historyOpen: st.historyOpen,
+      historyIcon: st.historyOpen ? 'chevron-down' : 'chevron-right',
+      historyTitle: prev ? prev.title : '',
+      historyMeta: histRows.length + (histRows.length === 1 ? ' cierre · ' : ' cierres · ') +
+        histRows.filter(r => r.st === 'cerrado' || r.st === 'cambios').length + ' formalizados',
+      historyRows: histRows.map((r, i) => {
+        const d = this.decorate(r, 'h' + i);
+        return { key: d.key, name: d.name, per: d.per, meta: d.meta, icon: d.icon, iconColor: d.iconColor, railColor: d.railColor, m1l: d.m1l, m1v: d.m1v, foot: d.foot, open: d.open, key1: d.key1 };
+      }),
+      toggleHistory: () => this.setState(s => ({ historyOpen: !s.historyOpen })),
+      toggleHistoryKey: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setState(s => ({ historyOpen: !s.historyOpen })); } },
+
+      modalOpen: !!md,
+      modalTitle: md ? md.name : '',
+      modalMeta: md ? md.per + ' · ' + md.freq + ' · ' + md.src : '',
+      modalState: ms ? ms.label : '',
+      modalTagColor: ms ? ms.tag : 'neutral',
+      modalTagVariant: ms ? ms.variant : 'filled',
+      modalFacts: facts,
+      modalHasNote: !!mn,
+      drawerStyles: { body: { padding: 0, display: 'flex', flexDirection: 'column' } },
+      drawerExtra: this.buildDrawerExtra(st),
+      modalHasDeps: st.areaKey === 'bancos' && !!md && (md.st === 'proceso' || md.st === 'sinCierre'),
+      modalShowOpenInfo: !(st.areaKey === 'bancos' && !!md && (md.st === 'cerrado' || md.st === 'cambios')),
+      modalShowCaratula: st.areaKey === 'bancos' && !!md && (md.st === 'cerrado' || md.st === 'cambios'),
+      caratulaCompany: st.companyKey,
+      caratulaTitle: md ? md.name : '',
+      caratulaDate: car.date,
+      caratulaRows: car.rows,
+      caratulaSaldos: car.saldos,
+      caratulaDiff: car.diff,
+      caratulaDiffBg: car.diffZero ? 'var(--surface-sunken)' : 'var(--color-warning-bg)',
+      caratulaDiffColor: car.diffZero ? 'var(--text-heading)' : 'var(--color-warning-text)',
+      caratulaSignName: car.signName,
+      caratulaSignRole: car.signRole,
+      downloadDisabled: !md || (md.st !== 'cerrado' && md.st !== 'cambios'),
+      modalDeps: DEPS.map((name, i) => {
+        const done = md ? ((md.name.length + i * 3) % 4) !== 1 : true;
+        return { name: name, label: done ? 'Cerrado' : 'Pendiente', color: done ? 'var(--color-success)' : 'var(--text-tertiary)' };
+      }),
+      modalNoteText: md && md.note ? md.note.x : '',
+      modalNoteIcon: mn ? mn.icon : 'info',
+      modalNoteBg: mn ? mn.bg : 'transparent',
+      modalNoteColor: mn ? mn.color : 'var(--text-secondary)',
+      modalNoteIconStyle: { marginTop: 2 },
+      generateDisabled: !md || md.st !== 'proceso',
+      modalActionHint: md && md.st === 'proceso'
+        ? 'Al generar el cierre se registra tu nombre y la fecha, y se conserva el resultado mostrado. La información operativa no se modifica.'
+        : 'Este cierre no puede formalizarse todavía. La información operativa se corrige en el sistema origen.',
+      closeModal: () => this.setState({ modal: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

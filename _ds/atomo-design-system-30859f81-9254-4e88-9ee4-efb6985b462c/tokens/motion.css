@@ -1,0 +1,5 @@
+/* Fast, linear-ish, never bouncy. Admin tools should feel instant. */
+:root{--ease-out:cubic-bezier(.215,.61,.355,1); /* @kind other */--ease-in-out:cubic-bezier(.645,.045,.355,1); /* @kind other */--ease-standard:cubic-bezier(.34,.69,.1,1); /* @kind other */
+--duration-instant:80ms; /* @kind other */--duration-fast:120ms; /* @kind other */--duration-base:200ms; /* @kind other */--duration-slow:300ms; /* @kind other */
+--transition-control:all var(--duration-base) var(--ease-out); /* @kind other */
+--transition-color:color var(--duration-fast) var(--ease-out),background-color var(--duration-fast) var(--ease-out),border-color var(--duration-fast) var(--ease-out)}

@@ -1,0 +1,9 @@
+/* Two sizes. Only two. Applies to every interactive control in the system. */
+:root{--control-height:32px;--control-height-compact:28px;--control-padding-x:12px;--control-padding-x-compact:8px;
+--control-icon:16px;--control-icon-sm:14px;
+--badge-height:22px;--badge-padding-x:8px;
+--tab-height:32px;--tab-height-compact:28px;
+--row-height:52px;--row-height-compact:40px;
+--sidebar-width:224px;--sidebar-width-collapsed:56px;--topbar-height:56px;
+--icon-cdn:"https://cdn.jsdelivr.net/npm/lucide-static@0.469.0/icons/"; /* @kind other */
+}

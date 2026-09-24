@@ -1,0 +1,9 @@
+/* Minimal global reset. Components carry their own styling; this only sets the page floor. */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{margin:0;font:var(--type-body);color:var(--text-body);background:var(--surface-page);font-feature-settings:var(--font-feature-numeric);text-wrap:pretty}
+*,*::before,*::after{box-sizing:border-box}
+a{color:var(--text-link);text-decoration:none;transition:var(--transition-color)}
+a:hover{color:var(--text-link-hover);text-decoration:none}
+a:active{color:var(--color-primary-active)}
+:focus-visible{outline:2px solid var(--color-primary);outline-offset:1px}
+::selection{background:var(--color-primary-bg-hover);color:var(--color-primary-active)}

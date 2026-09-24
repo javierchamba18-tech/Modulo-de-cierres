@@ -1,0 +1,6 @@
+/* 4px grid. Nothing off-grid, ever. */
+:root{--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;
+/* applied spacing */
+--gap-inline:8px;--gap-stack:12px;--gap-field:16px;--gap-section:24px;
+--padding-card:20px;--padding-card-compact:16px;--padding-page:24px;--padding-control:12px;
+--cell-py:12px;--cell-py-compact:8px;--cell-px:16px;--cell-px-compact:12px}

@@ -1,0 +1,4 @@
+/* Atomo — typeface. Inter is the single system typeface (Ant Design ships system-ui; Atomo pins Inter).
+   Served from Google Fonts; no binaries are vendored in this project. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+:root{--font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;--font-feature-numeric:"tnum" 1,"cv05" 1}

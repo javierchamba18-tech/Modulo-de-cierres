@@ -1,0 +1,19 @@
+/* Atomo — eight text styles. Do not add a ninth without a documented need. */
+:root{
+--fs-page-title:24px; /* @kind font */--lh-page-title:32px;--fw-page-title:600; /* @kind font */--ls-page-title:-.2px;
+--fs-section-title:16px;--lh-section-title:24px;--fw-section-title:600; /* @kind font */
+--fs-body:14px;--lh-body:22px;--fw-body:400; /* @kind font */
+--fs-label:13px;--lh-label:20px;--fw-label:500; /* @kind font */
+--fs-button:14px;--lh-button:22px;--fw-button:500; /* @kind font */
+--fs-table-header:13px;--lh-table-header:20px;--fw-table-header:600; /* @kind font */--ls-table-header:.2px;
+--fs-table-cell:14px;--lh-table-cell:22px;--fw-table-cell:400; /* @kind font */
+--fs-caption:12px;--lh-caption:18px;--fw-caption:400; /* @kind font */
+/* shorthand font tokens */
+--type-page-title:var(--fw-page-title) var(--fs-page-title)/var(--lh-page-title) var(--font-sans);
+--type-section-title:var(--fw-section-title) var(--fs-section-title)/var(--lh-section-title) var(--font-sans);
+--type-body:var(--fw-body) var(--fs-body)/var(--lh-body) var(--font-sans);
+--type-label:var(--fw-label) var(--fs-label)/var(--lh-label) var(--font-sans);
+--type-button:var(--fw-button) var(--fs-button)/var(--lh-button) var(--font-sans);
+--type-table-header:var(--fw-table-header) var(--fs-table-header)/var(--lh-table-header) var(--font-sans);
+--type-table-cell:var(--fw-table-cell) var(--fs-table-cell)/var(--lh-table-cell) var(--font-sans);
+--type-caption:var(--fw-caption) var(--fs-caption)/var(--lh-caption) var(--font-sans)}
